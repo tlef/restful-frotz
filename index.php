@@ -78,7 +78,14 @@
 	$data['title'] = trim($lines['1']);
 	$data['message'] = array_slice($lines, 2);
 
-	echo json_encode($data);
+	switch ($output_type){
+		case 'screen':
+			echo json_encode($data);
+			break;
+		default:
+			die(json_encode(array('ok'=>0, 'error'=>'invalid output_type')));
+			break;
+}
 
 	#
 	# Since each entry will generate the default lines, before we restore our state, 
