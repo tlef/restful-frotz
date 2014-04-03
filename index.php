@@ -4,10 +4,9 @@
 	#
 
 	$FROTZ_EXE_PATH 	= '/home/tlef/frotz-src/frotz/dfrotz';
-	$FROTZ_DATA_PATH 	= '/home/tlef/frotz/zork1/DATA';
 	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
 	$FROTZ_DATA_MAP		= array(
-		'zork1' => 'ZORK1.DAT'
+		'zork1' => '/home/tlef/frotz/zork1/DATA/ZORK1.DAT'
 	);
 
 	$STREAM_PATH		= '/home/tlef/frotz/streams';
@@ -33,12 +32,8 @@
 	}
 
 	$command = $_REQUEST['command'];
-	if (!$command){
-		die(json_encode(array('ok'=>0, 'error'=>'missing command')));
-	}
 
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.SAV";
-
 
 	# Restore from saved path
 	# \lt - Turn on line identification
@@ -48,7 +43,8 @@
 	# Save to save path - override Y, if file exists
 	#
 	$overwrite = "";
-	if (file_exists($save_path)){
+	$had_save = file_exists($save_path);
+	if ($had_save){
 		$overwrite = "\ny";
 	}
 	$input_data = "restore\n{$save_path}\n\\lt\n\\cm\\w\n{$command}\nsave\n{$save_path}{$overwrite}\n";
@@ -66,72 +62,103 @@
 
 	fclose($input_handle);
 
-	exec("{$FROTZ_EXE_PATH} {$FROTZ_DATA_PATH}/{$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
+	exec("{$FROTZ_EXE_PATH} {$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
 
-	$lines = strip_header_and_footer($output);
+	$lines = strip_header_and_footer($output, !$had_save);
 
-	$split = preg_split('/\s+/', $lines[0]);
 	$data = array();
-	$data['moves'] = $split[count($split)-1];
-	$data['score'] = $split[count($split)-3];
-	$data['location'] = trim(implode(" ", array_slice($split, 2, count($split)-6)));
-	$data['title'] = trim($lines['1']);
-	$data['message'] = array_slice($lines, 2);
+	if (strpos($lines[0], 'Score:') !== false && strpos($lines[0], 'Moves:') !== false){
+		$split = preg_split('/\s+/', $lines[0]);
+		$data['moves'] 	  = $split[count($split)-1];
+		$data['score'] 	  = $split[count($split)-3];
+		$data['location'] = trim(implode(" ", array_slice($split, 0, count($split)-4)));
+		$data['title'] 	  = trim($lines['1']);
+		$data['message']  = array_slice($lines, 2);
+	}else{
+		$data['error']  = trim($lines[0]);
+	}
 
 	switch ($output_type){
 		case 'screen':
 			echo json_encode($data);
 			break;
+		case 'slack':
+			include "plugins/plugin_slack.php";
+			frotz_restful_output($data);
+			break;
 		default:
 			die(json_encode(array('ok'=>0, 'error'=>'invalid output_type')));
 			break;
-}
+	}
 
 	#
 	# Since each entry will generate the default lines, before we restore our state, 
 	# and the restore and save command's themselves, we need to strip them from the
 	# lines.
 	#
-	function strip_header_and_footer($lines){
+	function strip_header_and_footer($lines, $show_intro){
 
-		$starting_header = explode("\n",
-			"0:  West of House                               Score: 0        Moves: 0
-			1: 
-			2: ZORK I: The Great Underground Empire
-			3: Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
-			4: ZORK is a registered trademark of Infocom, Inc.
-			5: Revision 88 / Serial number 840726
-			6: 
-			7: West of House
-			8: You are standing in an open field west of a white house, with a boarded
-			9: front door.
-			10: There is a small mailbox here.
-			11: 
-			12: >Please enter a filename []:  West of House                               Score: 0        Moves: 7
-			13: 
-			14: Ok.
-			15: 
-			16: >Line-type display ON
-			17: >Compression mode MAX, hiding top 0 lines");
+		$header = explode("\n",
+			"West of House                               Score: 0        Moves: 0
+			
+			ZORK I: The Great Underground Empire
+			Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
+			ZORK is a registered trademark of Infocom, Inc.
+			Revision 88 / Serial number 840726
+			 
+			West of House
+			You are standing in an open field west of a white house, with a boarded
+			front door.
+			There is a small mailbox here.
+			\n");
+
+		$load = explode("\n",
+			">Please enter a filename []:  West of House                               Score: 0        Moves: 7
+			 
+			 Ok.
+			 
+			 >Line-type display ON
+			 >Compression mode MAX, hiding top 0 lines");
 
 
-		$ending_footer = explode("\n",
-			"19: >Please enter a filename [/home/tlef/frotz/saves/1.SAV]: Overwrite existing file? Ok.
-			20: >
+		$save = explode("\n",
+			">Please enter a filename [/home/tlef/frotz/saves/1.SAV]: Overwrite existing file? Ok.
+			>
 			");
+
+
+		if ($show_intro){
+			#
+			# Modify lines so the intro matches Line-type display
+			#
+			$lines[0] = "> >".$lines[0];
+			unset($lines[1]);
+		}
 
 		$stripped_lines = array();
 
 		foreach ($lines as $idx=>$line){
+			$line = str_replace("> > ", "", $line);
+			if ($idx < count($header)-1){
+				if ($show_intro){
+					$stripped_lines[] = trim($line);
+				}
 
-			if ($idx >= count($starting_header)){
+			}elseif ($idx < (count($header)+count($load))-1){
+				#
+				# Skip the load data
+				#
+
+			}elseif (!$show_intro && ($idx + count($save) >= count($lines)+1)){
+				#
+				# Skip the save data
+				#
+
+			}elseif (!$show_intro){
 				$stripped_lines[] = trim($line);
 			}
-
-			if ($idx + count($ending_footer) >= count($lines)){
-				break;
-			}
 		}
+
 		return $stripped_lines;
 	}
 
