@@ -11,6 +11,18 @@
 
 	$STREAM_PATH		= '/home/tlef/frotz/streams';
 
+	if ($_REQUEST['handler']){
+		$plugin = 'plugins/plugin_'.$_REQUEST['handler'].'.php';
+		if (file_exists($plugin)){
+			include $plugin;
+			frotz_restful_input($_REQUEST);
+		}else{
+			die(json_encode(array('ok'=>0, 'error'=>'missing handler plugin '.$plugin)));
+		}
+	}
+
+
+
 	$session_id = $_REQUEST['session_id'];
 	if (!$session_id){
 		die(json_encode(array('ok'=>0, 'error'=>'missing session_id')));
@@ -78,12 +90,13 @@
 		$data['error']  = trim($lines[0]);
 	}
 
+	frotz_restful_output($data);
 	switch ($output_type){
 		case 'screen':
-			echo json_encode($data);
+			//echo json_encode($data);
 			break;
 		case 'slack':
-			include "plugins/plugin_slack.php";
+//			include "plugins/plugin_slack.php";
 			frotz_restful_output($data);
 			break;
 		default:
