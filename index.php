@@ -11,17 +11,28 @@
 
 	$STREAM_PATH		= '/home/tlef/frotz/streams';
 
+	#
+	# Setup handlers (optional), and start processing the input
+	#
 	if ($_REQUEST['handler']){
 		$plugin = 'plugins/plugin_'.$_REQUEST['handler'].'.php';
 		if (file_exists($plugin)){
 			include $plugin;
-			frotz_restful_input($_REQUEST);
+
+			if (!function_exists("handler_input")){
+				die(json_encode(array('ok'=>0, 'error'=>'missing input handler function for '.$plugin)));
+			}
+			if (!function_exists("handler_output")){
+				die(json_encode(array('ok'=>0, 'error'=>'missing output handler function for '.$plugin)));
+			}
+
+			handler_input($_REQUEST);
+
 		}else{
+
 			die(json_encode(array('ok'=>0, 'error'=>'missing handler plugin '.$plugin)));
 		}
 	}
-
-
 
 	$session_id = $_REQUEST['session_id'];
 	if (!$session_id){
@@ -44,7 +55,6 @@
 	}
 
 	$command = $_REQUEST['command'];
-
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.SAV";
 
 	# Restore from saved path
@@ -62,8 +72,12 @@
 	$input_data = "restore\n{$save_path}\n\\lt\n\\cm\\w\n{$command}\nsave\n{$save_path}{$overwrite}\n";
 
 
+	#
+	# Prep and write the input stream
+	#
 	$input_stream = "{$STREAM_PATH}/{$session_id}.f_in";
 	$input_handle = fopen($input_stream, "w+");
+
 	if (!$input_handle){
 		die(json_encode(array('ok'=>0, 'error'=>'could not open/create input stream')));
 	}
@@ -74,35 +88,49 @@
 
 	fclose($input_handle);
 
+
+	#
+	# Execute Dumb Frotz
+	#
 	exec("{$FROTZ_EXE_PATH} {$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
 
+	
+	#
+	# Strip extra lines from
+	#
 	$lines = strip_header_and_footer($output, !$had_save);
 
+	
+	#
+	# Parse the lines into their data sets
+	#
 	$data = array();
 	if (strpos($lines[0], 'Score:') !== false && strpos($lines[0], 'Moves:') !== false){
+
 		$split = preg_split('/\s+/', $lines[0]);
 		$data['moves'] 	  = $split[count($split)-1];
 		$data['score'] 	  = $split[count($split)-3];
-		$data['location'] = trim(implode(" ", array_slice($split, 0, count($split)-4)));
-		$data['title'] 	  = trim($lines['1']);
-		$data['message']  = array_slice($lines, 2);
+		$data['location'] = implode(" ", array_slice($split, 0, count($split)-4));
+		$data['title'] 	  = $lines['1'];
+		$data['message']  = implode("\n", array_slice($lines, 2));
+
 	}else{
-		$data['error']  = trim($lines[0]);
+
+		$data['error']  = $lines[0];
 	}
 
-	frotz_restful_output($data);
-	switch ($output_type){
-		case 'screen':
-			//echo json_encode($data);
-			break;
-		case 'slack':
-//			include "plugins/plugin_slack.php";
-			frotz_restful_output($data);
-			break;
-		default:
-			die(json_encode(array('ok'=>0, 'error'=>'invalid output_type')));
-			break;
+	#
+	# Output to output handler or to screen
+	#
+	if ($plugin){
+		handler_output($data);
+
+	}else{
+		echo json_encode($data);
 	}
+
+
+	####################################################################################
 
 	#
 	# Since each entry will generate the default lines, before we restore our state, 
@@ -154,7 +182,7 @@
 			$line = str_replace("> > ", "", $line);
 			if ($idx < count($header)-1){
 				if ($show_intro){
-					$stripped_lines[] = trim($line);
+					$stripped_lines[] = str_replace("\"", "'", $line);
 				}
 
 			}elseif ($idx < (count($header)+count($load))-1){
@@ -168,7 +196,7 @@
 				#
 
 			}elseif (!$show_intro){
-				$stripped_lines[] = trim($line);
+				$stripped_lines[] = str_replace("\"", "'", $line);
 			}
 		}
 
