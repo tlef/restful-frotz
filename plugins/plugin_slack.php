@@ -10,7 +10,6 @@
 	#
 	function handler_input(&$params){
 
-	error_log(serialize($params));
 		$command = str_replace($params['trigger_word'], "", $params['text']);
 		if (substr($command, 0, 1) != " "){
 			#
@@ -21,7 +20,7 @@
 			die;
 		}
 
-		$params['command'] = $command;
+		$params['command'] = substr($command, 1);
 	}
 
 

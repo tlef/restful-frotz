@@ -51,8 +51,24 @@
 		$output_type = 'screen';
 	}
 
-	$command = $_REQUEST['command'];
+	#
+	# Cleanup the command string
+	#
+	$command = trim(preg_replace('/[^A-Za-z0-9]/', ' ', htmlspecialchars_decode(strtolower($_REQUEST['command']))));
+
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.zsav";
+
+	#
+	# Check for restricted commands
+	#
+	switch ($command){
+		case 'save':
+		case 'restore':
+		case 'quit':
+		case 'exit':
+			handler_error($command.' is a restricted command');
+			break;
+	}
 
 	# Restore from saved path
 	# \lt - Turn on line identification
