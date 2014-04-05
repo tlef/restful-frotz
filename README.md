@@ -3,9 +3,8 @@ restful-frotz
 
 ## Overview
 
-*restful-frotz* is a set of PHP scripts that will simulate a REST interface to the Z-Machine emulator [FROTZ](`https://github.com/DavidGriffith/frotz`).
 
-====
+*restful-frotz* is a set of PHP scripts that will simulate a REST interface to the Z-Machine emulator [FROTZ](`https://github.com/DavidGriffith/frotz`).
 
 ## Credits
 Project source: [https://github.com/tlef/restful-frotz](https://github.com/tlef/restful-frotz)
@@ -13,8 +12,6 @@ Project source: [https://github.com/tlef/restful-frotz](https://github.com/tlef/
 Created by: Tim Lefler ([tlef](https://github.com/tlef/))
 
 Frotz is maintained by [David Griffith](https://github.com/DavidGriffith/frotz)
-
-====
 
 ## Install and Setup
 
@@ -34,8 +31,6 @@ Next you need to download *restful-frotz* and add it to a web accessible directo
     
 That's it. Once installed and setup, you should be able to just visit your URL (explained below) and start playing.
 
-=====
-
 ## Building your REST URL
 
 #### Example
@@ -51,8 +46,6 @@ That's it. Once installed and setup, you should be able to just visit your URL (
 
 *Plugins may also define their own additional parameters.*
 
-======
-
 ## Plugins
 
 ### Default
@@ -61,11 +54,13 @@ The ***default*** handler will not modify input, and will use http body for outp
 ### Slack
 The [Slack](http://slack.com) plugin is built to interact with the *Slack* incoming and outgoing webhooks, to allow for game playing within a specific #channel.
 
+*restful-frotz* works with Slack by being targeted from an outgoing-webhook, and then posting the non-error data back to Slack via an incoming-webhook. Error data will be returned back to the outgoing-webhook. The reason we not return game data back to the outoing webhook because outgoing webhooks do not currently support Slack chat attachments.
+
+
 #### Parameters
 `handler` - value: ***slack*** - Flag telling *restful-frotz* to use the ***slack*** handler plugin.
 
 `output-webhook` - value: ***a slack incoming-webhook URL*** - The URL to be called to post the results of the http request. 
- We do not return non-error data to the slack outoing webhook because outgoing webhooks do not currently support chat attachments.
 
 #### Example URL
 `http://sample.com/restful-frotz/?session_id=123456789&data_id=zork1&handler=slack&output-webhook=http://sample.slack.com/services/hooks/incoming-webhook?token=abcdefghijklmnop`
