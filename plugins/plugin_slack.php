@@ -8,9 +8,9 @@
 	# Slack specific input handler. Will convert the slack 
 	# outgoing webhook data to what's required for restful-frotz
 	#
-	function handler_input(&$_REQUEST){
+	function handler_input(&$params){
 
-		$command = str_replace($_REQUEST['trigger_word'], "", $_REQUEST['text']);
+		$command = str_replace($params['trigger_word'], "", $params['text']);
 		if (substr($command, 0, 1) != " "){
 			#
 			# The trigger was not followed by a space,
@@ -20,7 +20,7 @@
 			die;
 		}
 
-		$_REQUEST['command'] = $command;
+		$params['command'] = $command;
 	}
 
 

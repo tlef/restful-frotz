@@ -7,7 +7,7 @@
 	#
 	# Default input handler doesn't need to do anything
 	#
-	function handler_input(&$_REQUEST){
+	function handler_input(&$params){
 
 		# nothing
 	}
