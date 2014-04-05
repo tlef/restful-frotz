@@ -10,6 +10,7 @@
 	#
 	function handler_input(&$params){
 
+	error_log(serialize($params));
 		$command = str_replace($params['trigger_word'], "", $params['text']);
 		if (substr($command, 0, 1) != " "){
 			#
@@ -76,6 +77,7 @@
 	#
 	function handler_error($error){
 
+		error_log("restful-frotz [slack] error: ".$error);
 		die(json_encode(array('ok' =>0, 'text' => $error)));
 	}
 

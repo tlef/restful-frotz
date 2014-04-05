@@ -26,6 +26,7 @@
 	#
 	function handler_error($error){
 
+		error_log("restful-frotz [default] error: ".$error);
 		die(json_encode(array('ok' =>0, 'error' => $error)));
 	}
 
