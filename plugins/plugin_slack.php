@@ -1,11 +1,12 @@
 <?
-
-	$HANDLER_SLACK_INCOMING_WEBHOOK = "https://tlef.slack.com/services/hooks/incoming-webhook?token=KANhXkFDyasG5rfA7ZXh9Kbf";
-	$HANDLER_SLACK_ATTACH_COLOR 	= '333342';
+	#
+	# plugin_slack
+	# A slack plugin for restful-frotz
+	#
 
 	#
-	# Slack specific input handler. Will convert the slack outgoign webhook
-	# data to what's required for restful-frotz
+	# Slack specific input handler. Will convert the slack 
+	# outgoing webhook data to what's required for restful-frotz
 	#
 	function handler_input(&$_REQUEST){
 
@@ -22,21 +23,23 @@
 		$_REQUEST['command'] = $command;
 	}
 
+
 	#
-	# Slack specific output handler. Will convert the restful-frotz
-	# data to what's required for a Slack incomign webhook, and call 
-	# the hook.
+	# Slack specific output handler. 
+	# Will convert the restful-frotz data to what's required for a 
+	# Slack incomign webhook, and call the hook.
 	#
 	function handler_output($data){
 
-		global $HANDLER_SLACK_INCOMING_WEBHOOK;
-		global $HANDLER_SLACK_ATTACH_COLOR;
+		if (!$_REQUEST['output-webhook']){
+			return array('ok' => 0, 'error' => 'config error - missing slack incoming webhook');
+		}
 
 		if ($data['error']){
 			$attachment = array(
 				'text' 	   => $data['error'],
-				'color'    => $HANDLER_SLACK_ATTACH_COLOR,
 				'fallback' => $data['error'],
+				'color'    => 'dddddd',
 			);
 
 		}else{
@@ -44,16 +47,35 @@
 				'title'    => $data['title'],
 				'text'     => $data['message'],
 				'fallback' => $title,
-				'color'    => $HANDLER_SLACK_ATTACH_COLOR,
+				'color'    => '333342',
 			);
 		}
 
-		$ch = curl_init(); 
-		curl_setopt($ch, CURLOPT_URL, $HANDLER_SLACK_INCOMING_WEBHOOK);
-		curl_setopt($ch, CURLOPT_POST, 1); 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, array('payload' => json_encode(array('attachments' => array($attachment))))); 
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
-		curl_exec($ch); 
-		curl_close($ch); 
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $_REQUEST['output-webhook']);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, array('payload' => json_encode(array('attachments' => array($attachment)))));
+		curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
+
+		$ret = curl_exec($ch);
+		if (!$ret) $curl_error = curl_error($ch);
+
+		curl_close($ch);
+
+		if ($curl_error){
+			return array('ok' => 0, 'error' => $curl_error);
+		}
+
+		return array('ok' => 1);
+	}
+
+
+	#
+	# Slack specific error handler.
+	# Will output the error to the Slack outgoing webhook response.
+	#
+	function handler_error($error){
+
+		die(json_encode(array('ok' =>0, 'text' => $error)));
 	}
 

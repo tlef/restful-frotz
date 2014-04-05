@@ -1,52 +1,49 @@
 <?
 	#
-	# Frotz-Post
+	# restul-frotz
+	# github.com/tlef/restful-frotz
 	#
 
-	$FROTZ_EXE_PATH 	= '/home/tlef/frotz-src/frotz/dfrotz';
-	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
-	$FROTZ_DATA_MAP		= array(
-		'zork1' => '/home/tlef/frotz/zork1/DATA/ZORK1.DAT'
-	);
-
-	$STREAM_PATH		= '/home/tlef/frotz/streams';
+	include 'config.php';
 
 	#
-	# Setup handlers (optional), and start processing the input
+	# Setup handlers, and start processing the input
 	#
-	if ($_REQUEST['handler']){
-		$plugin = 'plugins/plugin_'.$_REQUEST['handler'].'.php';
-		if (file_exists($plugin)){
-			include $plugin;
+	$handler = $_REQUEST['handler'];
 
-			if (!function_exists("handler_input")){
-				die(json_encode(array('ok'=>0, 'error'=>'missing input handler function for '.$plugin)));
-			}
-			if (!function_exists("handler_output")){
-				die(json_encode(array('ok'=>0, 'error'=>'missing output handler function for '.$plugin)));
-			}
+	if (!$handler) $handler = 'default';
 
-			handler_input($_REQUEST);
+	$plugin = 'plugins/plugin_'.$handler.'.php';
+	if (file_exists($plugin)){
+		include $plugin;
 
-		}else{
-
-			die(json_encode(array('ok'=>0, 'error'=>'missing handler plugin '.$plugin)));
+		if (!function_exists("handler_input")){
+			handler_error('missing input handler function for '.$handler);
 		}
+		if (!function_exists("handler_output")){
+			handler_error('missing output handler function for '.$handler);
+		}
+
+		handler_input($_REQUEST);
+
+	}else{
+
+		handler_error('missing handler plugin '.$handler);
 	}
 
 	$session_id = $_REQUEST['session_id'];
 	if (!$session_id){
-		die(json_encode(array('ok'=>0, 'error'=>'missing session_id')));
+		handler_error('missing session_id');
 	}
 
 	$data_id = $_REQUEST['data_id'];
 	if (!$data_id){
-		die(json_encode(array('ok'=>0, 'error'=>'missing data_id')));
+		handler_error('missing data_id');
 	}
 
 	$data_file = $FROTZ_DATA_MAP[strtolower($data_id)];
 	if (!$data_file){
-		die(json_encode(array('ok'=>0, 'error'=>'invalid data_id')));
+		handler_error('invalid data_id');
 	}
 
 	$output_type = $_REQUEST['output_type'];
@@ -55,7 +52,7 @@
 	}
 
 	$command = $_REQUEST['command'];
-	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.SAV";
+	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.zsav";
 
 	# Restore from saved path
 	# \lt - Turn on line identification
@@ -79,11 +76,11 @@
 	$input_handle = fopen($input_stream, "w+");
 
 	if (!$input_handle){
-		die(json_encode(array('ok'=>0, 'error'=>'could not open/create input stream')));
+		handler_error('could not open/create input stream');
 	}
 
 	if (!fwrite($input_handle, $input_data)){
-		die(json_encode(array('ok'=>0, 'error'=>'could not write to input stream')));
+		handler_error('could not write to input stream');
 	}
 
 	fclose($input_handle);
@@ -120,13 +117,11 @@
 	}
 
 	#
-	# Output to output handler or to screen
+	# Output to output handler
 	#
-	if ($plugin){
-		handler_output($data);
-
-	}else{
-		echo json_encode($data);
+	$ret = handler_output($data);
+	if (!$ret['ok']){
+		handler_error('error from output handler - '.$ret['error']);
 	}
 
 
@@ -163,7 +158,7 @@
 
 
 		$save = explode("\n",
-			">Please enter a filename [/home/tlef/frotz/saves/1.SAV]: Overwrite existing file? Ok.
+			">Please enter a filename [1.SAV]: Overwrite existing file? Ok.
 			>
 			");
 
