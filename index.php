@@ -124,7 +124,7 @@
 		$data['moves'] 	  = $split[count($split)-1];
 		$data['score'] 	  = $split[count($split)-3];
 		$data['location'] = implode(" ", array_slice($split, 0, count($split)-4));
-		$data['title'] 	  = $lines['1'];
+		$data['title'] 	  = trim($lines['1']);
 		$data['message']  = implode("\n", array_slice($lines, 2));
 
 	}else{
