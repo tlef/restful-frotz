@@ -6,6 +6,11 @@
 
 	include 'config.php';
 
+	if (!isset($_REQUEST['play'])){
+		include 'restful-frotz.php';
+		exit();
+	}
+
 	#
 	# Setup handlers, and start processing the input
 	#
@@ -44,11 +49,6 @@
 	$data_file = $FROTZ_DATA_MAP[strtolower($data_id)];
 	if (!$data_file){
 		handler_error('invalid data_id');
-	}
-
-	$output_type = $_REQUEST['output_type'];
-	if (!$output_type){
-		$output_type = 'screen';
 	}
 
 	#
