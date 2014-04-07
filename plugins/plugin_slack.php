@@ -46,7 +46,7 @@
 			$attachment = array(
 				'title'    => $data['title'],
 				'text'     => $data['message'],
-				'fallback' => $title,
+				'fallback' => $data['title'],
 				'color'    => '333342',
 			);
 		}
