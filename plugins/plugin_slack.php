@@ -44,7 +44,7 @@
 
 		}else{
 			$attachment = array(
-				'title'    => $data['title'],
+				'title'    => trim($data['title']),
 				'text'     => $data['message'],
 				'fallback' => $data['title'],
 				'color'    => '333342',
