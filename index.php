@@ -16,7 +16,7 @@
 	#
 	$handler = $_REQUEST['handler'];
 
-	if (!$handler) $handler = 'default';
+	if (!$handler) $handler = 'json';
 
 	$plugin = 'plugins/plugin_'.$handler.'.php';
 	if (file_exists($plugin)){

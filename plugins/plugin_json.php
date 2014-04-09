@@ -1,11 +1,11 @@
 <?
 	#
-	# plugin_default
-	# The default plugin for restful-frotz
+	# plugin_json
+	# The JSON plugin for restful-frotz
 	#
 
 	#
-	# Default input handler doesn't need to do anything
+	# JSON input handler doesn't need to do anything
 	#
 	function handler_input(&$params){
 
@@ -13,7 +13,7 @@
 	}
 
 	#
-	# Default output handler just outputs to the body
+	# JSON output handler just outputs to the body
 	#
 	function handler_output($data){
 
@@ -22,11 +22,11 @@
 	}
 
 	#
-	# Default error handler just outputs to the body
+	# JSON error handler just outputs to the body
 	#
 	function handler_error($error){
 
-		error_log("restful-frotz [default] error: ".$error);
+		error_log("restful-frotz [json] error: ".$error);
 		die(json_encode(array('ok' =>0, 'error' => $error)));
 	}
 

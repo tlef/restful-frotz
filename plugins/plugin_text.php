@@ -1,11 +1,11 @@
 <?
 	#
-	# plugin_default
-	# The default plugin for restful-frotz
+	# plugin_text
+	# The text plugin for restful-frotz
 	#
 
 	#
-	# Default input handler doesn't need to do anything
+	# Text input handler doesn't need to do anything
 	#
 	function handler_input(&$params){
 
@@ -13,7 +13,7 @@
 	}
 
 	#
-	# Default output handler just outputs to the body
+	# Text output handler just outputs to the body
 	#
 	function handler_output($data){
 
@@ -28,11 +28,11 @@
 	}
 
 	#
-	# Default error handler just outputs to the body
+	# Text error handler just outputs to the body
 	#
 	function handler_error($error){
 
-		error_log("restful-frotz [default] error: ".$error);
+		error_log("restful-frotz [text] error: ".$error);
 		die($error);
 	}
 
