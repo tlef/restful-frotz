@@ -15,7 +15,6 @@
 		#
 		# Command is the trigger + space removed from whole input
 		#
-		error_log("strpos = ".strpos($params['text'], $params['trigger_word'].' '));
 		if (strpos($params['text'], $params['trigger_word'].' ') !== 0){
 			#
 			# The input didn't start with the trigger word, so
