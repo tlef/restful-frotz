@@ -10,12 +10,17 @@
 	#
 	function handler_input(&$params){
 		
-		$command = substr($params['text'], strlen($params['trigger_word'] + ' '));
+		$command = substr($params['text'], strlen($params['trigger_word'].' '));
+
+		#
 		# Command is the trigger + space removed from whole input
-		if (strpos($params['text'], $params['trigger_word']) != '0' ){
+		#
+		error_log("strpos = ".strpos($params['text'], $params['trigger_word'].' '));
+		if (strpos($params['text'], $params['trigger_word'].' ') !== 0){
 			#
 			# The input didn't start with the trigger word, so
 			# bail with no output
+			#
 			die;
 		}
 
