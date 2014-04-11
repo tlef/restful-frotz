@@ -9,18 +9,17 @@
 	# outgoing webhook data to what's required for restful-frotz
 	#
 	function handler_input(&$params){
-
-		$command = str_replace($params['trigger_word'], "", $params['text']);
-		if (substr($command, 0, 1) != " "){
+		
+		$command = substr($params['text'], strlen($params['trigger_word'] + ' '));
+		# Command is the trigger + space removed from whole input
+		if (strpos($params['text'], $params['trigger_word']) != '0' ){
 			#
-			# The trigger was not followed by a space,
-			# so they might have just started a sentance with
-			# the trigger word, so bail with no output.
-			#
+			# The input didn't start with the trigger word, so
+			# bail with no output
 			die;
 		}
 
-		$params['command'] = substr($command, 1);
+		$params['command'] = $command;
 	}
 
 
