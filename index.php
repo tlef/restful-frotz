@@ -105,7 +105,7 @@
 	#
 	# Execute Dumb Frotz
 	#
-	exec("{$FROTZ_EXE_PATH} {$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
+	exec("{$FROTZ_EXE_PATH} -i -Z 0 {$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
 
 	
 	#
@@ -191,6 +191,10 @@
 
 		foreach ($lines as $idx=>$line){
 			$line = str_replace("> > ", "", $line);
+			if (substr(trim($line), 0, 1) == "@"){
+				continue;
+			}
+
 			if ($idx < count($header)-1){
 				if ($show_intro){
 					$stripped_lines[] = str_replace("\"", "'", $line);
