@@ -70,6 +70,19 @@
 			break;
 	}
 
+	if ($command == 'reset' || $command == 'restart'){
+		unlink($save_path);
+		$data = array(
+			'title' => 'Game reset',
+			'message' => 'Your game has been reset. Enjoy!',
+		);
+		$ret = handler_output($data);
+		if (!$ret['ok']){
+			handler_error('error from output handler - '.$ret['error']);
+		}
+		exit();
+	}
+
 	# Restore from saved path
 	# \lt - Turn on line identification
 	# \cm - Dont show blank lines
