@@ -30,7 +30,7 @@
 	#
 	# Slack specific output handler. 
 	# Will convert the restful-frotz data to what's required for a 
-	# Slack incomign webhook, and call the hook.
+	# Slack incoming webhook, and call the hook.
 	#
 	function handler_output($data){
 
