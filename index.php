@@ -46,8 +46,9 @@
 		handler_error('missing data_id');
 	}
 
-	$data_file = $FROTZ_DATA_MAP[strtolower($data_id)];
-	if (!$data_file){
+	$GLOBALS['frotz_data'] = $FROTZ_DATA_MAP[strtolower($data_id)];
+
+	if (!$GLOBALS['frotz_data']){
 		handler_error('invalid data_id');
 	}
 
@@ -118,7 +119,7 @@
 	#
 	# Execute Dumb Frotz
 	#
-	exec("{$FROTZ_EXE_PATH} -i -Z 0 {$data_file} <{$STREAM_PATH}/$session_id.f_in", $output);
+	exec("{$FROTZ_EXE_PATH} -i -Z 0 {$GLOBALS['frotz_data']['path']} <{$STREAM_PATH}/$session_id.f_in", $output);
 
 	
 	#
@@ -163,35 +164,6 @@
 	#
 	function strip_header_and_footer($lines, $show_intro){
 
-		$header = explode("\n",
-			"West of House                               Score: 0        Moves: 0
-			
-			ZORK I: The Great Underground Empire
-			Copyright (c) 1981, 1982, 1983 Infocom, Inc. All rights reserved.
-			ZORK is a registered trademark of Infocom, Inc.
-			Revision 88 / Serial number 840726
-			 
-			West of House
-			You are standing in an open field west of a white house, with a boarded
-			front door.
-			There is a small mailbox here.
-			\n");
-
-		$load = explode("\n",
-			">Please enter a filename []:  West of House                               Score: 0        Moves: 7
-			 
-			 Ok.
-			 
-			 >Line-type display ON
-			 >Compression mode MAX, hiding top 0 lines");
-
-
-		$save = explode("\n",
-			">Please enter a filename [1.SAV]: Overwrite existing file? Ok.
-			>
-			");
-
-
 		if ($show_intro){
 			#
 			# Modify lines so the intro matches Line-type display
@@ -208,17 +180,17 @@
 				continue;
 			}
 
-			if ($idx < count($header)-1){
+			if ($idx < $GLOBALS['frotz_data']['header']-1){
 				if ($show_intro){
 					$stripped_lines[] = str_replace("\"", "'", $line);
 				}
 
-			}elseif ($idx < (count($header)+count($load))-1){
+			}elseif ($idx < ($GLOBALS['frotz_data']['header']+$GLOBALS['frotz_data']['load'])-1){
 				#
 				# Skip the load data
 				#
 
-			}elseif (!$show_intro && ($idx + count($save) >= count($lines)+1)){
+			}elseif (!$show_intro && ($idx + $GLOBALS['frotz_data']['save'] >= count($lines)+1)){
 				#
 				# Skip the save data
 				#

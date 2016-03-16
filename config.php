@@ -1,6 +1,4 @@
 <?
-
-
 	#
 	# FROTZ_EXE_PATH is the path to your dfrotz executable
 	# required: read permissions
@@ -14,16 +12,36 @@
 	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
 
 	#
-	# FROTZ_DATA_MAP - A mapping of data_id's to the path of frotz data files
-	# required: read permissions
+	# FROTZ_DATA_MAP - A mapping of data_id's to the path and metadata of frotz data files
+	# path - the path of the DAT file - required: read permissions
+	# header - the line count of the header output
+	# load - the line count of the load output
+	# save - the line count of the save output
 	#
 	# As of the building of this script, Infocom lets you download Zork 1-3
 	# for free at: http://www.infocom-if.org/downloads/downloads.html
 	#
 	$FROTZ_DATA_MAP		= array(
-		'zork1' => '/home/tlef/frotz/data/ZORK1.DAT',
-		'zork2' => '/home/tlef/frotz/data/ZORK2.DAT',
-		'zork3' => '/home/tlef/frotz/data/ZORK3.DAT',
+		'zork1' => array(
+			'path'		=> '/home/tlef/frotz/data/ZORK1.DAT',
+			'header'	=> 13,
+			'load'		=> 6,
+			'save'		=> 3,
+		),
+
+		'zork2' => array(
+			'path'		=> '/home/tlef/frotz/data/ZORK2.DAT',
+			'header'	=> 15,
+			'load'		=> 6,
+			'save'		=> 3,
+		),
+
+		'zork3' => array(
+			'path'		=> '/home/tlef/frotz/data/ZORK3.DAT',
+			'header'	=> 24,
+			'load'		=> 6,
+			'save'		=> 3,
+		),
 	);
 
 	#
