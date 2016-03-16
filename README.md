@@ -29,7 +29,7 @@ Lastly you need to download *restful-frotz* and add it to a web accessible direc
     $STREAM_PATH		= '<the full path to a writable directory to store the stream files>';
 
     $FROTZ_DATA_MAP		= array(
-	    '<data_id>' => '<the full path to a z-machine data file>',
+	    '<data_id>' => '<the full path and metadata regarding a z-machine data file>',
     );
     
 That's it. Once installed and setup, you should be able to just visit your URL (explained below) and start playing.
@@ -44,7 +44,7 @@ That's it. Once installed and setup, you should be able to just visit your URL (
 
 `session_id` - A unique ID used to identify your session (save). Make this as unique as you can, as anyone who has this session_id can play your game instance
 
-`data_id` - The ID into the FROTZ_DATA_MAP, mapping to the path of the Z-Machine data file you want to load. (What game you want to play)
+`data_id` - The ID into the FROTZ_DATA_MAP, mapping to the data of the Z-Machine data file you want to load. (What game you want to play)
 
 #### Optional Params
 `handler` - The ID of the plugin handler to use. If not set, it will be set to ***default***.
