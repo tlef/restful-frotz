@@ -79,6 +79,6 @@ The [Slack](http://slack.com) plugin is built to interact with the *Slack* incom
 `output-webhook` - value: ***a slack incoming-webhook URL*** - The URL to be called to post the results of the http request. 
 
 #### Example URL
-`http://sample.com/restful-frotz/?play&session_id=123456789&data_id=zork1&handler=slack&output-webhook=http://sample.slack.com/services/hooks/incoming-webhook?token=abcdefghijklmnop`
+`http://sample.com/restful-frotz/?play&session_id=123456789&data_id=zork1&handler=slack&output-webhook=http://hooks.slack.com/services/T1234567/B1234567/abcdefghijklmnop`
 
 
