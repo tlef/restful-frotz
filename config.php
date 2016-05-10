@@ -11,6 +11,19 @@
 	#
 	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
 
+   #
+	# FROTZ_SAVES_ENABLED - Boolean value to indicate whether explicit saves are
+	# permitted.
+	#
+	$FROTZ_SAVES_ENABLED = True;
+
+	#
+   # FROTZ_SAVE_SLOTS - Numeric value indicating the number of save games available
+   # for each session.  If not specified the default is 5.  FROTZ_SAVES_ENABLED
+   # must be true for this to apply, of course.
+   #
+	$FROTZ_SAVE_SLOTS = 5;
+
 	#
 	# FROTZ_DATA_MAP - A mapping of data_id's to the path and metadata of frotz data files
 	# path - the path of the DAT file - required: read permissions
@@ -23,21 +36,21 @@
 	#
 	$FROTZ_DATA_MAP		= array(
 		'zork1' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK1.DAT',
+			'path'		=> '/opt/frotz/data/ZORK1.z3',
 			'header'	=> 13,
 			'load'		=> 6,
 			'save'		=> 3,
 		),
 
 		'zork2' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK2.DAT',
+			'path'		=> '/opt/frotz/data/ZORK1.z3',
 			'header'	=> 15,
 			'load'		=> 6,
 			'save'		=> 3,
 		),
 
 		'zork3' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK3.DAT',
+			'path'		=> '/opt/frotz/data/ZORK1.z3',
 			'header'	=> 24,
 			'load'		=> 6,
 			'save'		=> 3,
@@ -48,4 +61,4 @@
 	# STREAM_PATH - The path to access/store the stream files
 	# required: read/write permissions
 	#
-	$STREAM_PATH		= '/home/tlef/frotz/streams';
+	$STREAM_PATH		= '/opt/frotz/streams';

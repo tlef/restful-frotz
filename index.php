@@ -59,11 +59,46 @@
 
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.zsav";
 
-	#
+
+    #
+    # Handle save and restore for later
+    #
+    $save_game_path = "";
+    if (preg_match('/(?:(save)\\s+(\\d))/i', $command, $save_command_match)) {
+        copy($save_path, "{$FROTZ_SAVE_PATH}/{$session_id}-${save_command_match[2]}.zsav");
+        $data = array(
+            'title' => 'Game save',
+            'message' => "Your game has been saved to save slot ${save_command_match[2]}",
+        );
+        $ret = handler_output($data);
+        exit();
+    } else if (preg_match('/(?:(restore)\\s+(\\d))/i', $command, $restore_command_match)) {
+
+        $restore_file = "{$FROTZ_SAVE_PATH}/{$session_id}-${$restore_command_match[2]}.zsav";
+
+        if (is_file($restore_file)) {
+            copy($restore_file, $save_path);
+            $data = array(
+                'title' => 'Game Restore',
+                'message' => "Your game has been restored from save slot ${$restore_command_match[2]}",
+            );
+        } else {
+            $data = array(
+                'title' => 'Game Restore',
+                'message' => "FAIL! Save slot ${$restore_command_match[2]} does not exist!",
+            );
+        }
+        $ret = handler_output($data);
+        exit();
+    }
+
+
+    #
 	# Check for restricted commands
 	#
 	switch ($command){
 		case 'save':
+
 		case 'restore':
 		case 'quit':
 		case 'exit':
@@ -121,13 +156,13 @@
 	#
 	exec("{$FROTZ_EXE_PATH} -i -Z 0 {$GLOBALS['frotz_data']['path']} <{$STREAM_PATH}/$session_id.f_in", $output);
 
-	
+
 	#
 	# Strip extra lines from
 	#
 	$lines = strip_header_and_footer($output, !$had_save);
 
-	
+
 	#
 	# Parse the lines into their data sets
 	#
@@ -158,7 +193,7 @@
 	####################################################################################
 
 	#
-	# Since each entry will generate the default lines, before we restore our state, 
+	# Since each entry will generate the default lines, before we restore our state,
 	# and the restore and save command's themselves, we need to strip them from the
 	# lines.
 	#
