@@ -3,13 +3,13 @@
 	# FROTZ_EXE_PATH is the path to your dfrotz executable
 	# required: read permissions
 	#
-	$FROTZ_EXE_PATH 	= '/home/tlef/frotz/dfrotz';
+	$FROTZ_EXE_PATH 	= '/usr/local/bin/dfrotz';
 
 	#
 	# FROTZ_SAVE_PATH - The path to access/store your frotz save files
 	# required: read/write permissions
 	#
-	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
+	$FROTZ_SAVE_PATH 	= '/opt/frotz/saves';
 
    #
 	# FROTZ_SAVES_ENABLED - Boolean value to indicate whether explicit saves are
