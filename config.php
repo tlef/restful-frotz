@@ -11,17 +11,17 @@
 	#
 	$FROTZ_SAVE_PATH 	= '/opt/frotz/saves';
 
-        #
+    #
 	# FROTZ_SLOT_SAVES_ENABLED - Boolean value to indicate whether explicit saves are
 	# permitted.
 	#
 	$FROTZ_SLOT_SAVES_ENABLED = True;
 
 	#
-        # FROTZ_SAVE_SLOTS - Numeric value indicating the number of save games available
-        # for each session.  If not specified the default is 5.  FROTZ_SAVES_ENABLED
-        # must be true for this to apply, of course.
-        #
+    # FROTZ_SAVE_SLOTS - Numeric value indicating the number of save games available
+    # for each session.  If not specified the default is 5.  FROTZ_SAVES_ENABLED
+    # must be true for this to apply, of course.
+    #
 	$FROTZ_SAVE_SLOTS = 5;
 
 	#
