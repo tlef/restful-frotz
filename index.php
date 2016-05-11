@@ -59,11 +59,18 @@
 
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.zsav";
 
-	#
+
+
+
+	handle_save_and_restore($command, $save_path, $session_id, $FROTZ_SLOT_SAVES_ENABLED, $FROTZ_SAVE_SLOTS, $FROTZ_SAVE_PATH);
+
+
+    #
 	# Check for restricted commands
 	#
 	switch ($command){
 		case 'save':
+
 		case 'restore':
 		case 'quit':
 		case 'exit':
@@ -121,13 +128,13 @@
 	#
 	exec("{$FROTZ_EXE_PATH} -i -Z 0 {$GLOBALS['frotz_data']['path']} <{$STREAM_PATH}/$session_id.f_in", $output);
 
-	
+
 	#
 	# Strip extra lines from
 	#
 	$lines = strip_header_and_footer($output, !$had_save);
 
-	
+
 	#
 	# Parse the lines into their data sets
 	#
@@ -156,9 +163,8 @@
 
 
 	####################################################################################
-
 	#
-	# Since each entry will generate the default lines, before we restore our state, 
+	# Since each entry will generate the default lines, before we restore our state,
 	# and the restore and save command's themselves, we need to strip them from the
 	# lines.
 	#
@@ -203,3 +209,58 @@
 		return $stripped_lines;
 	}
 
+    #
+    # Handle save and restore for later
+    #
+    function handle_save_and_restore($command, $save_path, $session_id, $FROTZ_SLOT_SAVES_ENABLED, $FROTZ_SAVE_SLOTS, $FROTZ_SAVE_PATH)
+    {
+        if (!$FROTZ_SLOT_SAVES_ENABLED) {
+            $data = array(
+                'title' => 'Game save',
+                'message' => "Sorry, slot-based saving is not enabled.",
+            );
+            $ret = handler_output($data);
+            exit();
+        }
+
+        if ($FROTZ_SLOT_SAVES_ENABLED && preg_match('/(?:(save)\\s+(\\d))/i', $command, $save_slot)) {
+
+            if ($save_slot <= $FROTZ_SAVE_SLOTS && $save_slot > 0) {
+                copy($save_path, "{$FROTZ_SAVE_PATH}/{$session_id}-${save_slot[2]}.zsav");
+
+                $data = array(
+                    'title' => 'Game save',
+                    'message' => "Your game has been saved to save slot ${save_slot[2]}",
+                );
+            } else {
+                $data = array(
+                    'title' => 'Game save',
+                    'message' => "Your save slot allotment is $FROTZ_SAVE_SLOTS and your specified value of  ${save_slot[2]} is invalid.",
+                );
+            }
+
+            $ret = handler_output($data);
+            exit();
+
+        } else {
+            if ($FROTZ_SLOT_SAVES_ENABLED && preg_match('/(?:(restore)\\s+(\\d))/i', $command, $restore_slot)) {
+
+                $restore_file = "{$FROTZ_SAVE_PATH}/{$session_id}-${restore_slot[2]}.zsav";
+
+                if (is_file($restore_file)) {
+                    copy($restore_file, $save_path);
+                    $data = array(
+                        'title' => 'Game Restore',
+                        'message' => "Your game has been restored from save slot ${restore_slot[2]}",
+                    );
+                } else {
+                    $data = array(
+                        'title' => 'Game Restore',
+                        'message' => "FAIL! Restore slot ${restore_slot[2]} does not exist!  Your save slot allotment is $FROTZ_SAVE_SLOTS.",
+                    );
+                }
+                $ret = handler_output($data);
+                exit();
+            }
+        }
+    }
