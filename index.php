@@ -74,18 +74,18 @@
         exit();
     } else if (preg_match('/(?:(restore)\\s+(\\d))/i', $command, $restore_command_match)) {
 
-        $restore_file = "{$FROTZ_SAVE_PATH}/{$session_id}-${$restore_command_match[2]}.zsav";
+        $restore_file = "{$FROTZ_SAVE_PATH}/{$session_id}-${restore_command_match[2]}.zsav";
 
         if (is_file($restore_file)) {
             copy($restore_file, $save_path);
             $data = array(
                 'title' => 'Game Restore',
-                'message' => "Your game has been restored from save slot ${$restore_command_match[2]}",
+                'message' => "Your game has been restored from save slot ${restore_command_match[2]}",
             );
         } else {
             $data = array(
                 'title' => 'Game Restore',
-                'message' => "FAIL! Save slot ${$restore_command_match[2]} does not exist!",
+                'message' => "FAIL! Save slot ${restore_command_match[2]} does not exist!",
             );
         }
         $ret = handler_output($data);
