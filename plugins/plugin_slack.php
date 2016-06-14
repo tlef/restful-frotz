@@ -1,4 +1,4 @@
-<?
+<?php
 	#
 	# plugin_slack
 	# A slack plugin for restful-frotz

@@ -1,4 +1,4 @@
-<?
+<?php
 	#
 	# restul-frotz
 	# github.com/tlef/restful-frotz
