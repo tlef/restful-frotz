@@ -1,4 +1,4 @@
-<?
+<?php
 	#
 	# plugin_text
 	# The text plugin for restful-frotz

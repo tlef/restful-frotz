@@ -1,4 +1,4 @@
-<?
+<?php
 	#
 	# plugin_json
 	# The JSON plugin for restful-frotz

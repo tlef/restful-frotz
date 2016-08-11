@@ -1,4 +1,4 @@
-<?
+<?php
 
 	#
 	# If we have a command, lets process the new event
@@ -53,16 +53,16 @@
 			<div class="form-group" style="float:left; width:49%">
 				<label class="control-label" for="data_id">data_id</label>
 				<select class="form-control select" id="data_id" name="data_id">
-					<option value="zork1" <? if ($_REQUEST['data_id'] == 'zork1') echo 'selected';?>>Zork 1</option>
-					<option value="zork2" <? if ($_REQUEST['data_id'] == 'zork2') echo 'selected';?>>Zork 2</option>
-					<option value="zork3" <? if ($_REQUEST['data_id'] == 'zork3') echo 'selected';?>>Zork 3</option>
+					<option value="zork1" <?php if ($_REQUEST['data_id'] == 'zork1') echo 'selected';?>>Zork 1</option>
+					<option value="zork2" <?php if ($_REQUEST['data_id'] == 'zork2') echo 'selected';?>>Zork 2</option>
+					<option value="zork3" <?php if ($_REQUEST['data_id'] == 'zork3') echo 'selected';?>>Zork 3</option>
 				</select>
 			</div>
 			<div class="form-group" style="float:right; width:49%">
 				<label class="control-label" for="handler">handler</label>
 				<select class="form-control select" id="handler" name="handler">
-					<option value="text" <? if ($_REQUEST['handler'] == 'text') echo 'selected';?>>Default (text)</option>
-					<option value="json" <? if ($_REQUEST['handler'] == 'json') echo 'selected';?>>JSON</option>
+					<option value="text" <?php if ($_REQUEST['handler'] == 'text') echo 'selected';?>>Default (text)</option>
+					<option value="json" <?php if ($_REQUEST['handler'] == 'json') echo 'selected';?>>JSON</option>
 				</select>
 			</div>
 			<div style="clear:both"></div>
@@ -78,7 +78,7 @@
 		</form>
 
 		Output for <strong><?=$_REQUEST['command']?></strong>:
-		<pre><?
+		<pre><?php
 		if ($_REQUEST['handler'] == 'json'){
 			$data = json_decode($response, true);
 			echo json_encode($data, JSON_PRETTY_PRINT);
