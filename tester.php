@@ -20,7 +20,7 @@
 		# CURL it!
 		#
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, 'http://tlef.ca/projects/restful-frotz/?play&'.http_build_query($args) );
+		curl_setopt( $ch, CURLOPT_URL, 'https://tlef.ca/projects/restful-frotz/?play&'.http_build_query($args) );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $_REQUEST);
 		$response = curl_exec( $ch );
@@ -32,7 +32,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatibe" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Restful-frotz Tester</title>
 
