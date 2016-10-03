@@ -3,13 +3,13 @@
 	# FROTZ_EXE_PATH is the path to your dfrotz executable
 	# required: read permissions
 	#
-	$FROTZ_EXE_PATH 	= '/home/tlef/frotz/dfrotz';
+	$FROTZ_EXE_PATH 	= '/var/www/frotz/dfrotz';
 
 	#
 	# FROTZ_SAVE_PATH - The path to access/store your frotz save files
 	# required: read/write permissions
 	#
-	$FROTZ_SAVE_PATH 	= '/home/tlef/frotz/saves';
+	$FROTZ_SAVE_PATH 	= '/var/www/frotz/saves';
 
 	#
 	# FROTZ_DATA_MAP - A mapping of data_id's to the path and metadata of frotz data files
@@ -23,21 +23,21 @@
 	#
 	$FROTZ_DATA_MAP		= array(
 		'zork1' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK1.DAT',
+			'path'		=> '/var/www/frotz/data/ZORK1.DAT',
 			'header'	=> 13,
 			'load'		=> 6,
 			'save'		=> 3,
 		),
 
 		'zork2' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK2.DAT',
+			'path'		=> '/var/www/frotz/data/ZORK2.DAT',
 			'header'	=> 15,
 			'load'		=> 6,
 			'save'		=> 3,
 		),
 
 		'zork3' => array(
-			'path'		=> '/home/tlef/frotz/data/ZORK3.DAT',
+			'path'		=> '/var/www/frotz/data/ZORK3.DAT',
 			'header'	=> 24,
 			'load'		=> 6,
 			'save'		=> 3,
@@ -48,4 +48,4 @@
 	# STREAM_PATH - The path to access/store the stream files
 	# required: read/write permissions
 	#
-	$STREAM_PATH		= '/home/tlef/frotz/streams';
+	$STREAM_PATH		= '/var/www/frotz/streams';
