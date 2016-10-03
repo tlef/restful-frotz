@@ -20,7 +20,7 @@
 		# CURL it!
 		#
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, 'http://tlef.ca/projects/restful-frotz/?play&'.http_build_query($args) );
+		curl_setopt( $ch, CURLOPT_URL, 'https://tlef.ca/projects/restful-frotz/?play&'.http_build_query($args) );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $_REQUEST);
 		$response = curl_exec( $ch );
