@@ -1,4 +1,4 @@
-<?
+<?php
 	#
 	# FROTZ_EXE_PATH is the path to your dfrotz executable
 	# required: read permissions
