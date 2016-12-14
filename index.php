@@ -14,7 +14,7 @@
 	#
 	# Setup handlers, and start processing the input
 	#
-	$handler = $_REQUEST['handler'];
+	$handler = preg_replace("/[^a-zA-Z0-9]+/", "", $_REQUEST['handler']);
 
 	if (!$handler) $handler = 'json';
 
@@ -36,12 +36,12 @@
 		handler_error('missing handler plugin '.$handler);
 	}
 
-	$session_id = $_REQUEST['session_id'];
+	$session_id = preg_replace("/[^a-zA-Z0-9]+/", "", $_REQUEST['session_id']);
 	if (!$session_id){
 		handler_error('missing session_id');
 	}
 
-	$data_id = $_REQUEST['data_id'];
+	$data_id = preg_replace("/[^a-zA-Z0-9]+/", "", $_REQUEST['data_id']);
 	if (!$data_id){
 		handler_error('missing data_id');
 	}
@@ -55,7 +55,7 @@
 	#
 	# Cleanup the command string
 	#
-	$command = trim(preg_replace('/[^A-Za-z0-9]/', ' ', htmlspecialchars_decode(strtolower($_REQUEST['command']))));
+	$command = trim(preg_replace('/[^A-Za-z0-9]/', ' ', htmlspecialchars_decode(strtolower(preg_replace("/[^a-zA-Z0-9 ]+/", "", $_REQUEST['command'])))));
 
 	$save_path = "{$FROTZ_SAVE_PATH}/{$session_id}.zsav";
 
